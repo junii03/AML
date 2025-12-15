@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Income Prediction</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; }
+      label { display:block; margin-top:0.5rem }
+      input, select { width: 100%; padding: 0.4rem; margin-top:0.2rem }
+      .card { max-width:800px; margin:auto }
+      .result { margin-top:1rem; padding:1rem; background:#f3f3f3 }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Predict Income</h1>
+      <form method="post">
+        {% for col in numeric_cols %}
+          <label for="{{ col }}">{{ col }}</label>
+          <input step="any" type="number" name="{{ col }}" id="{{ col }}" required />
+        {% endfor %}
+
+        {% for col in categorical_cols %}
+          <label for="{{ col }}">{{ col }}</label>
+          <select name="{{ col }}" id="{{ col }}" required>
+            <option value="">-- select --</option>
+            {% for opt in choices[col] %}
+              <option value="{{ opt }}">{{ opt }}</option>
+            {% endfor %}
+          </select>
+        {% endfor %}
+
+        <button type="submit" style="margin-top:1rem;padding:0.6rem 1.2rem">Predict</button>
+      </form>
+
+      {% if prediction is not none %}
+        <div class="result">
+          <strong>Predicted Income:</strong>
+          <div>{{ prediction }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
