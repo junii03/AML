@@ -8,6 +8,56 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        .accordion-item {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px !important;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .accordion-button {
+            background: transparent !important;
+            color: var(--text-primary) !important;
+            box-shadow: none !important;
+            font-weight: 700;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .accordion-button::after {
+            filter: invert(1);
+        }
+
+        .accordion-body {
+            background: transparent;
+            padding: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .method-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-family: monospace;
+            margin-right: 0.75rem;
+            background: var(--accent-primary);
+        }
+
+        pre code {
+            font-size: 0.85rem !important;
+        }
+
+        .api-section-title {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,148 +70,221 @@
     </nav>
 
     <div class="container-lg py-5 mt-5">
-        <div class="text-center mb-5">
-            <h1 class=" fw-bold"><i class="fas fa-book me-2"></i>API Documentation</h1>
-            <p class="text-secondary">Reference guide for all available ML endpoints</p>
+        <div class="text-center mb-5 fade-in">
+            <h1 class="fw-bold"><i class="fas fa-book me-2 text-primary"></i>API Reference</h1>
+            <p class="text-secondary">Explore and integrate our available ML endpoints</p>
         </div>
 
-        <div class="row">
-            <div class="col-lg-3 d-none d-lg-block">
-                <div class="list-group sticky-top" style="top: 100px;">
-                    <a href="#image-api"
-                        class="list-group-item list-group-item-action bg-dark text-light border-secondary">Image
-                        Classification</a>
-                    <a href="#text-gen-api"
-                        class="list-group-item list-group-item-action bg-dark text-light border-secondary">Text
-                        Generation</a>
-                    <a href="#trans-api"
-                        class="list-group-item list-group-item-action bg-dark text-light border-secondary">Translation</a>
-                    <a href="#sentiment-api"
-                        class="list-group-item list-group-item-action bg-dark text-light border-secondary">Sentiment
-                        Analysis</a>
-                    <a href="#qa-api"
-                        class="list-group-item list-group-item-action bg-dark text-light border-secondary">Question
-                        Answering</a>
-                </div>
-            </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="accordion" id="apiAccordion">
 
-            <div class="col-lg-9">
-                <!-- Image API -->
-                <div class="service-card shadow mb-5" id="image-api">
-                    <div class="service-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <h5 class="mb-0 fw-bold"><i class="fas fa-image me-2"></i>Image Classification</h5>
-                    </div>
-                    <div class="p-4">
-                        <h6 class="text-accent fs-5 font-monospace mb-3">POST /api/image_classify</h6>
-                        <p class="text-secondary">predicts gender (Male/Female) from an uploaded image using a CNN
-                            model.</p>
+                    <!-- Image API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.1s;">
+                        <h2 class="accordion-header" id="headingImage">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseImage" aria-expanded="true" aria-controls="collapseImage">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-image me-2 text-info"></i>
+                                    Image Classification
+                                    <span
+                                        class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/image_classify</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseImage" class="accordion-collapse collapse show" aria-labelledby="headingImage"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/image_classify</h6>
+                                <p class="text-secondary small">Predicts gender (Male/Female) from an uploaded image
+                                    using a CNN model.</p>
 
-                        <h6 class="fw-bold mt-4">Parameters (Multipart/Form-Data)</h6>
-                        <ul class="text-secondary">
-                            <li><code class="text-info">image</code> (file, required) - The image file to analyze.</li>
-                        </ul>
-
-                        <h6 class="fw-bold mt-4">Response</h6>
-                        <pre class="bg-dark p-3 rounded border border-secondary text-light"><code>{
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">image</code> (file) - Required image file</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
   "label": "male",
-  "score": 0.98,
-  "raw_predictions": [0.02, 0.98]
+  "score": 0.98
 }</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Text Gen API -->
-                <div class="service-card shadow mb-5" id="text-gen-api">
-                    <div class="service-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <h5 class="mb-0 fw-bold"><i class="fas fa-magic me-2"></i>Text Generation</h5>
-                    </div>
-                    <div class="p-4">
-                        <h6 class="text-accent fs-5 font-monospace mb-3">POST /api/text_generate</h6>
-                        <p class="text-secondary">Generates text continuation based on a prompt using GPT-2.</p>
+                    <!-- Text Gen API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.2s;">
+                        <h2 class="accordion-header" id="headingText">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseText" aria-expanded="false" aria-controls="collapseText">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-magic me-2 text-warning"></i>
+                                    Text Generation
+                                    <span
+                                        class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/text_generate</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseText" class="accordion-collapse collapse" aria-labelledby="headingText"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/text_generate</h6>
+                                <p class="text-secondary small">Generates text continuation based on a prompt using
+                                    GPT-2.</p>
 
-                        <h6 class="fw-bold mt-4">Parameters (JSON)</h6>
-                        <ul class="text-secondary">
-                            <li><code class="text-info">prompt</code> (string, required) - Initial text to start
-                                generation.</li>
-                        </ul>
-
-                        <h6 class="fw-bold mt-4">Response</h6>
-                        <pre class="bg-dark p-3 rounded border border-secondary text-light"><code>{
-  "text": "The future of AI involves..."
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (JSON)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">prompt</code> (string) - Text to start
+                                                generation</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
+  "text": "The future of AI..."
 }</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Translation API -->
-                <div class="service-card shadow mb-5" id="trans-api">
-                    <div class="service-header" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <h5 class="mb-0 fw-bold"><i class="fas fa-language me-2"></i>Translation</h5>
-                    </div>
-                    <div class="p-4">
-                        <h6 class="text-accent fs-5 font-monospace mb-3">POST /api/translate</h6>
-                        <p class="text-secondary">Translates English text to Urdu.</p>
+                    <!-- Translation API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.3s;">
+                        <h2 class="accordion-header" id="headingTrans">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTrans" aria-expanded="false" aria-controls="collapseTrans">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-language me-2 text-success"></i>
+                                    Translation
+                                    <span
+                                        class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/translate</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseTrans" class="accordion-collapse collapse" aria-labelledby="headingTrans"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/translate</h6>
+                                <p class="text-secondary small">Translates English text to Urdu.</p>
 
-                        <h6 class="fw-bold mt-4">Parameters (JSON)</h6>
-                        <ul class="text-secondary">
-                            <li><code class="text-info">text</code> (string, required) - English text to translate.</li>
-                        </ul>
-
-                        <h6 class="fw-bold mt-4">Response</h6>
-                        <pre class="bg-dark p-3 rounded border border-secondary text-light"><code>{
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (JSON)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">text</code> (string) - English text to translate
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
   "text": "یہ ایک مثال ہے"
 }</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Sentiment API -->
-                <div class="service-card shadow mb-5" id="sentiment-api">
-                    <div class="service-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                        <h5 class="mb-0 fw-bold"><i class="fas fa-smile me-2"></i>Sentiment Analysis</h5>
-                    </div>
-                    <div class="p-4">
-                        <h6 class="text-accent fs-5 font-monospace mb-3">POST /api/sentiment_voice</h6>
-                        <p class="text-secondary">Transcribes audio and performs sentiment analysis on the text.</p>
+                    <!-- Sentiment API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.4s;">
+                        <h2 class="accordion-header" id="headingSent">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSent" aria-expanded="false" aria-controls="collapseSent">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-smile me-2 text-danger"></i>
+                                    Sentiment Analysis
+                                    <span
+                                        class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/sentiment_voice</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseSent" class="accordion-collapse collapse" aria-labelledby="headingSent"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/sentiment_voice</h6>
+                                <p class="text-secondary small">Transcribes audio and performs sentiment analysis on the
+                                    text.</p>
 
-                        <h6 class="fw-bold mt-4">Parameters (Multipart/Form-Data)</h6>
-                        <ul class="text-secondary">
-                            <li><code class="text-info">audio</code> (file, required) - Audio file containing speech.
-                            </li>
-                        </ul>
-
-                        <h6 class="fw-bold mt-4">Response</h6>
-                        <pre class="bg-dark p-3 rounded border border-secondary text-light"><code>{
-  "text": "I am feeling great today",
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">audio</code> (file) - Audio recorded in browser
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
+  "text": "Great day!",
   "sentiment": {
     "label": "POSITIVE",
     "score": 0.99
   }
 }</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- QA API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.5s;">
+                        <h2 class="accordion-header" id="headingQA">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseQA" aria-expanded="false" aria-controls="collapseQA">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-question me-2 text-primary"></i>
+                                    Question Answering
+                                    <span
+                                        class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/qa_voice</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseQA" class="accordion-collapse collapse" aria-labelledby="headingQA"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/qa_voice</h6>
+                                <p class="text-secondary small">Answers a question asked in audio, using provided or
+                                    default context.</p>
+
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">audio</code> (file) - Recorded question</li>
+                                            <li><code class="text-info">context</code> (string, optional) - Custom text
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Response Type</h6>
+                                        <div class="p-3 bg-dark rounded border border-secondary text-light small">
+                                            <i class="fas fa-file-audio me-2 text-info"></i> Returns
+                                            <strong>audio/mpeg</strong> (MP3)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-
-                <!-- QA API -->
-                <div class="service-card shadow mb-5" id="qa-api">
-                    <div class="service-header" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-                        <h5 class="mb-0 fw-bold"><i class="fas fa-question me-2"></i>Question Answering</h5>
-                    </div>
-                    <div class="p-4">
-                        <h6 class="text-accent fs-5 font-monospace mb-3">POST /api/qa_voice</h6>
-                        <p class="text-secondary">Answers a question asked in an audio file, using provided or default
-                            context.</p>
-
-                        <h6 class="fw-bold mt-4">Parameters (Multipart/Form-Data)</h6>
-                        <ul class="text-secondary">
-                            <li><code class="text-info">audio</code> (file, required) - Audio file containing the
-                                question.</li>
-                            <li><code class="text-info">context</code> (string, optional) - Context paragraph to answer
-                                from. Defaults to info about Pakistan if omitted.</li>
-                        </ul>
-
-                        <h6 class="fw-bold mt-4">Response</h6>
-                        <p class="text-secondary">Returns an audio file (MP3) containing the spoken answer.</p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
