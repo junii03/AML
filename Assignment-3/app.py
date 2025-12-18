@@ -38,6 +38,10 @@ def sentiment_page():
 def qa_page():
     return render_template('qa.html')
 
+@app.route('/docs')
+def docs_page():
+    return render_template('docs.html')
+
 
 @app.route('/api/image_classify', methods=['POST'])
 def api_image_classify():

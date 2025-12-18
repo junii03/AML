@@ -44,7 +44,7 @@
                             </div>
 
                             <!-- Recording Section -->
-                            <div class="mb-5 text-center">
+                            <div class="mb-5 text-center" id="recording-section">
                                 <label class="form-label d-block fw-bold mb-3">Option 1: Record Question</label>
                                 <div class="recording-ui justify-content-center">
                                     <button type="button" id="record-btn" class="record-btn"
@@ -55,6 +55,23 @@
                                 </div>
                                 <small class="text-secondary d-block mt-2" id="record-status">Click mic to ask
                                     question</small>
+                            </div>
+
+                            <!-- Playback Preview Section (Hidden by default) -->
+                            <div id="playback-preview" class="mb-5 text-center" style="display:none;">
+                                <label class="form-label d-block fw-bold mb-3">Preview Recording</label>
+                                <div class="preview-ui p-4 bg-dark rounded border border-secondary mb-3"
+                                    style="--bs-bg-opacity: .3;">
+                                    <audio id="preview-audio" controls class="w-100 mb-3"></audio>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <button type="button" id="submit-recorded-btn" class="btn btn-gradient">
+                                            <i class="fas fa-check me-2"></i>Analyze Question
+                                        </button>
+                                        <button type="button" id="reset-record-btn" class="btn btn-outline-secondary">
+                                            <i class="fas fa-undo me-2"></i>Record Again
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="position-relative mb-5 text-center">
@@ -204,6 +221,13 @@
         // Recording Handler
         const recordBtn = document.getElementById('record-btn');
         const recordStatus = document.getElementById('record-status');
+        const playbackPreview = document.getElementById('playback-preview');
+        const recordingSection = document.getElementById('recording-section');
+        const previewAudio = document.getElementById('preview-audio');
+        const submitRecordedBtn = document.getElementById('submit-recorded-btn');
+        const resetRecordBtn = document.getElementById('reset-record-btn');
+
+        let lastRecordedBlob = null;
 
         recordBtn.addEventListener('click', async () => {
             if (!AudioRecorder.getState()) {
@@ -213,20 +237,40 @@
                     recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
                     recordStatus.textContent = "Recording... Click to stop.";
                     startTimer();
+
+                    // Reset result/error
+                    document.getElementById('qa-result').style.display = 'none';
+                    document.getElementById('qa-error').style.display = 'none';
                 } catch (err) {
                     alert("Could not access microphone. Please allow permissions.");
                 }
             } else {
-                const audioBlob = await AudioRecorder.stop();
+                lastRecordedBlob = await AudioRecorder.stop();
                 recordBtn.classList.remove('recording');
                 recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-                recordStatus.textContent = "Processing question...";
+                recordStatus.textContent = "Click mic to ask question";
                 stopTimer();
 
-                if (audioBlob) {
-                    processAudio(audioBlob);
+                if (lastRecordedBlob) {
+                    const url = URL.createObjectURL(lastRecordedBlob);
+                    previewAudio.src = url;
+                    recordingSection.style.display = 'none';
+                    playbackPreview.style.display = 'block';
                 }
             }
+        });
+
+        submitRecordedBtn.addEventListener('click', () => {
+            if (lastRecordedBlob) {
+                processAudio(lastRecordedBlob);
+            }
+        });
+
+        resetRecordBtn.addEventListener('click', () => {
+            lastRecordedBlob = null;
+            previewAudio.src = '';
+            playbackPreview.style.display = 'none';
+            recordingSection.style.display = 'block';
         });
 
         // File Upload Handler
