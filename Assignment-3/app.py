@@ -110,12 +110,19 @@ def api_qa_voice():
         f = request.files['audio']
         if f.filename == '':
             return jsonify({'error': 'Empty filename'}), 400
+
+        # Get optional context from form data
+        context = request.form.get('context')
+        if context and context.strip() == "":
+            context = None
+
         filename = secure_filename(f.filename)
         save_name = f"{uuid.uuid4().hex}_{filename}"
         path = UPLOAD_DIR / save_name
         f.save(path)
+
         question = service.speech_to_text(str(path))
-        answer = service.answer_question(question)
+        answer = service.answer_question(question, context=context)
         audio_path = service.text_to_speech(answer)
         return send_file(audio_path, as_attachment=True, mimetype='audio/mpeg')
     except Exception as e:

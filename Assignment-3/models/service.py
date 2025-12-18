@@ -15,6 +15,8 @@ try:
     os.environ['USE_TF'] = '0'
     os.environ['USE_TORCH'] = '1'
     os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
+    # Disable tokenizer parallelism to avoid deadlocks/warnings in multiprocess environments
+    os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 except:
     pass
 
@@ -175,13 +177,18 @@ def speech_to_text(audio_path: str):
 
         recognizer = sr.Recognizer()
 
-        # Convert to WAV if needed
-        if audio_path.lower().endswith('.mp3'):
-            from pydub import AudioSegment
-            audio = AudioSegment.from_file(audio_path, format="mp3")
-            wav_path = str(UPLOAD_DIR / f"temp_{uuid.uuid4().hex}.wav")
-            audio.export(wav_path, format="wav")
-            audio_path = wav_path
+        # Convert to WAV if needed (for WebM, MP3, etc.)
+        if not audio_path.lower().endswith('.wav'):
+            try:
+                from pydub import AudioSegment
+                # Allow pydub to auto-detect format (works for mp3, webm, ogg, etc. if ffmpeg is installed)
+                audio = AudioSegment.from_file(audio_path)
+                wav_path = str(UPLOAD_DIR / f"temp_{uuid.uuid4().hex}.wav")
+                audio.export(wav_path, format="wav")
+                audio_path = wav_path
+            except Exception as e:
+                print(f"Audio conversion warning: {e}")
+                # Fallthrough to try reading as is, just in case
 
         # Recognize speech
         with sr.AudioFile(audio_path) as source:

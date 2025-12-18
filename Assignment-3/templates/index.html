@@ -1,132 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ML Services - AI & ML Applications</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Services - AI & ML Applications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container-lg">
-      <a class="navbar-brand fw-bold" href="/">
-        <i class="fas fa-brain me-2"></i>ML Services
-      </a>
-      <span class="navbar-text text-white">AI-Powered Solutions</span>
-    </div>
-  </nav>
-
-  <header class="hero-section py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container-lg text-center text-white">
-      <h1 class="display-4 fw-bold mb-3">Intelligent AI Solutions</h1>
-      <p class="lead mb-0">Explore powerful machine learning models for image, text, and voice processing</p>
-    </div>
-  </header>
-
-  <main class="container-lg py-5">
-    <div class="row g-4">
-      <!-- Image Classification -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-            <i class="fas fa-image"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Image Classification</h3>
-          <p class="text-muted mb-3">Classify images as Male or Female using advanced CNN deep learning.</p>
-          <a href="/image" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>Classify Image
-          </a>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-lg">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>ML Services
+            </a>
+            <span class="navbar-text text-white-50 d-none d-md-block">AI-Powered Solutions</span>
         </div>
-      </div>
+    </nav>
 
-      <!-- Text Generation -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-            <i class="fas fa-wand-magic-sparkles"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Text Generation</h3>
-          <p class="text-muted mb-3">Generate creative text continuations using transformer models (GPT-2).</p>
-          <a href="/text#gen" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>Generate Text
-          </a>
+    <header class="hero-section text-center">
+        <div class="container-lg fade-in">
+            <h1 class="hero-title mb-4">Intelligent AI Solutions</h1>
+            <p class="lead text-secondary mb-5 mx-auto" style="max-width: 600px;">
+                Explore powerful machine learning models for image processing, text generation, translation, and voice
+                analysis.
+            </p>
+            <a href="#services" class="btn btn-gradient btn-lg">
+                Explore Services <i class="fas fa-arrow-down ms-2"></i>
+            </a>
         </div>
-      </div>
+    </header>
 
-      <!-- Translation -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-            <i class="fas fa-language"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Translation</h3>
-          <p class="text-muted mb-3">Translate English text to Urdu using state-of-the-art transformers.</p>
-          <a href="/text#trans" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>Translate
-          </a>
-        </div>
-      </div>
+    <main class="container-lg py-5" id="services">
+        <div class="row g-4">
+            <!-- Image Classification -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.1s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Image Classify</h3>
+                        <p class="text-secondary small mb-0">Gender classification using CNN</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Upload images to detect gender (Male/Female) with high accuracy
+                            using our custom trained model.</p>
+                        <a href="/image" class="btn btn-outline-light w-100 stretched-link">Try Now</a>
+                    </div>
+                </div>
+            </div>
 
-      <!-- Sentiment Analysis -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-            <i class="fas fa-smile"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Sentiment Analysis</h3>
-          <p class="text-muted mb-3">Analyze sentiment from voice input using speech recognition and transformers.</p>
-          <a href="/sentiment" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>Analyze Sentiment
-          </a>
-        </div>
-      </div>
+            <!-- Text Generation -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.2s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Text Gen</h3>
+                        <p class="text-secondary small mb-0">GPT-2 Text Completion</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Generate creative text continuations and stories from your
+                            prompts using transformer models.</p>
+                        <a href="/text#gen" class="btn btn-outline-light w-100 stretched-link">Try Now</a>
+                    </div>
+                </div>
+            </div>
 
-      <!-- Question Answering -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-            <i class="fas fa-question"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Question Answering</h3>
-          <p class="text-muted mb-3">Ask questions via voice and receive answers in audio format using QA models.</p>
-          <a href="/qa" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>Ask Question
-          </a>
-        </div>
-      </div>
+            <!-- Translation -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.3s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Translation</h3>
+                        <p class="text-secondary small mb-0">English to Urdu</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Seamlessly translate English text into Urdu using
+                            state-of-the-art NLP transformers.</p>
+                        <a href="/text#trans" class="btn btn-outline-light w-100 stretched-link">Try Now</a>
+                    </div>
+                </div>
+            </div>
 
-      <!-- Documentation -->
-      <div class="col-md-6 col-lg-4">
-        <div class="service-card h-100">
-          <div class="service-icon" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
-            <i class="fas fa-book"></i>
-          </div>
-          <h3 class="mt-3 mb-3">Documentation</h3>
-          <p class="text-muted mb-3">Learn about the models, API endpoints, and how to use each service.</p>
-          <a href="/docs" class="btn btn-gradient w-100">
-            <i class="fas fa-arrow-right me-2"></i>View Docs
-          </a>
-        </div>
-      </div>
-    </div>
-  </main>
+            <!-- Sentiment Analysis -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.4s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Sentiment</h3>
+                        <p class="text-secondary small mb-0">Voice Sentiment Analysis</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Analyze emotional sentiment directly from voice measurements
+                            using advanced speech processing.</p>
+                        <a href="/sentiment" class="btn btn-outline-light w-100 stretched-link">Try Now</a>
+                    </div>
+                </div>
+            </div>
 
-  <footer class="bg-dark text-white mt-5 py-4">
-    <div class="container-lg">
-      <div class="row">
-        <div class="col-md-6">
-          <h5><i class="fas fa-brain me-2"></i>ML Services</h5>
-          <p>Advanced AI and Machine Learning applications powered by transformers and deep learning.</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <p class="mb-0">© 2025 AI ML Lab. All rights reserved.</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+            <!-- Question Answering -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.5s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Q & A</h3>
+                        <p class="text-secondary small mb-0">Voice QA Assistant</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Ask questions verbally and receive spoken answers based on
+                            provided context.</p>
+                        <a href="/qa" class="btn btn-outline-light w-100 stretched-link">Try Now</a>
+                    </div>
+                </div>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Documentation -->
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card fade-in" style="animation-delay: 0.6s;">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="h4 fw-bold">Docs</h3>
+                        <p class="text-secondary small mb-0">API Reference</p>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <p class="text-secondary mb-4">Detailed documentation for developers on how to use our machine
+                            learning API endpoints.</p>
+                        <a href="/docs" class="btn btn-outline-light w-100 stretched-link">Read Docs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-5 py-4 text-center text-secondary">
+        <div class="container-lg">
+            <p class="mb-0">© 2025 AI ML Lab. Designed with <i class="fas fa-heart text-danger"></i> for Advanced ML.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

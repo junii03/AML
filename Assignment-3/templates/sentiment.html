@@ -1,120 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sentiment Analysis - ML Services</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis - ML Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container-lg">
-      <a class="navbar-brand fw-bold" href="/">
-        <i class="fas fa-arrow-left me-2"></i>Back to Home
-      </a>
-    </div>
-  </nav>
-
-  <div class="container-lg py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="service-card shadow-lg">
-          <div class="service-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-            <h1 class="mb-2">
-              <i class="fas fa-smile me-2"></i>Sentiment Analysis
-            </h1>
-            <p class="mb-0 text-white-50">Analyze sentiment from voice input</p>
-          </div>
-
-          <form id="sent-form" class="p-4">
-            <div class="mb-4">
-              <label for="audio-input" class="form-label fw-bold">
-                <i class="fas fa-microphone me-2"></i>Upload Audio File
-              </label>
-              <div class="input-group">
-                <input type="file" class="form-control" id="audio-input" name="audio" accept="audio/*" required>
-                <button class="btn btn-gradient" type="submit" id="analyze-btn">
-                  <i class="fas fa-play me-2"></i>Analyze
-                </button>
-              </div>
-              <small class="text-muted d-block mt-2">Supported formats: MP3, WAV, M4A, etc.</small>
-            </div>
-          </form>
-
-          <div id="sent-loading" class="p-4 text-center" style="display:none;">
-            <div class="spinner-border text-gradient" role="status">
-              <span class="visually-hidden">Processing...</span>
-            </div>
-            <p class="mt-3">Processing your audio...</p>
-          </div>
-
-          <div id="sent-result" class="p-4" style="display:none;">
-            <div class="alert alert-info" role="alert">
-              <h5 class="alert-heading">
-                <i class="fas fa-check-circle me-2"></i>Analysis Result
-              </h5>
-              <hr>
-              <div id="sent-result-content"></div>
-            </div>
-          </div>
-
-          <div id="sent-error" class="p-4" style="display:none;">
-            <div class="alert alert-danger" role="alert">
-              <h5 class="alert-heading">
-                <i class="fas fa-exclamation-circle me-2"></i>Error
-              </h5>
-              <p id="sent-error-msg" class="mb-0"></p>
-            </div>
-          </div>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-lg">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
         </div>
-      </div>
+    </nav>
+
+    <div class="container-lg py-5 mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="service-card shadow-lg fade-in">
+                    <div class="service-header text-center">
+                        <div class="service-icon mx-auto"
+                            style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h1 class="h3 mb-2 fw-bold">Sentiment Analysis</h1>
+                        <p class="text-secondary mb-0">Analyze emotional sentiment from voice input</p>
+                    </div>
+
+                    <div class="p-4 p-md-5">
+                        <form id="sent-form">
+                            <!-- Recording Section -->
+                            <div class="mb-5 text-center">
+                                <label class="form-label d-block fw-bold mb-3">Option 1: Record Voice</label>
+                                <div class="recording-ui justify-content-center">
+                                    <button type="button" id="record-btn" class="record-btn"
+                                        title="Start/Stop Recording">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <span id="timer" class="timer">00:00</span>
+                                </div>
+                                <small class="text-secondary d-block mt-2" id="record-status">Click mic to
+                                    record</small>
+                            </div>
+
+                            <div class="position-relative mb-5 text-center">
+                                <hr class="border-secondary opacity-25">
+                                <span class="position-absolute top-50 start-50 translate-middle px-3 text-secondary"
+                                    style="background: var(--bg-card);">OR</span>
+                            </div>
+
+                            <!-- Upload Section -->
+                            <div class="mb-4">
+                                <label for="audio-input" class="form-label fw-bold">
+                                    <i class="fas fa-upload me-2"></i>Option 2: Upload Audio File
+                                </label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="audio-input" name="audio"
+                                        accept="audio/*">
+                                    <button class="btn btn-gradient" type="submit" id="analyze-btn">
+                                        <i class="fas fa-play me-2"></i>Analyze File
+                                    </button>
+                                </div>
+                                <small class="text-secondary d-block mt-2">Supported formats: MP3, WAV, M4A,
+                                    etc.</small>
+                            </div>
+                        </form>
+
+                        <!-- Loading State -->
+                        <div id="sent-loading" class="text-center py-4" style="display:none;">
+                            <div class="spinner-border text-gradient" role="status" style="width: 3rem; height: 3rem;">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            <p class="mt-3 text-secondary">Processing your audio...</p>
+                        </div>
+
+                        <!-- Result State -->
+                        <div id="sent-result" class="mt-4" style="display:none;">
+                            <div class="alert alert-info">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-check-circle text-info me-2 fs-5"></i>
+                                    <h5 class="alert-heading mb-0">Analysis Result</h5>
+                                </div>
+                                <div id="sent-result-content"></div>
+                            </div>
+                        </div>
+
+                        <!-- Error State -->
+                        <div id="sent-error" class="mt-4" style="display:none;">
+                            <div class="alert alert-danger">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-exclamation-circle me-2 fs-5"></i>
+                                    <h5 class="alert-heading mb-0">Error</h5>
+                                </div>
+                                <p id="sent-error-msg" class="mb-0 text-secondary"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('sent-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const f = document.getElementById('audio-input').files[0];
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/recorder.js"></script>
+    <script>
+        // Timer Logic
+        let timerInterval;
+        let seconds = 0;
 
-      if (!f) return;
-
-      const fd = new FormData();
-      fd.append('audio', f);
-
-      document.getElementById('sent-loading').style.display = 'block';
-      document.getElementById('sent-result').style.display = 'none';
-      document.getElementById('sent-error').style.display = 'none';
-
-      try {
-        const res = await fetch('/api/sentiment_voice', { method: 'POST', body: fd });
-        const json = await res.json();
-
-        document.getElementById('sent-loading').style.display = 'none';
-
-        if (json.error) {
-          document.getElementById('sent-error-msg').textContent = json.error;
-          document.getElementById('sent-error').style.display = 'block';
-        } else {
-          const sentimentColor = json.sentiment.label === 'POSITIVE' ? 'success' : json.sentiment.label === 'NEGATIVE' ? 'danger' : 'warning';
-          const html = `
-            <p><strong>Transcribed Text:</strong></p>
-            <p class="bg-light p-2 rounded">"${json.text}"</p>
-            <hr>
-            <p><strong>Sentiment:</strong> <span class="badge bg-${sentimentColor}" style="font-size: 14px;">${json.sentiment.label}</span></p>
-            <p><strong>Confidence:</strong> ${(json.sentiment.score * 100).toFixed(2)}%</p>
-          `;
-          document.getElementById('sent-result-content').innerHTML = html;
-          document.getElementById('sent-result').style.display = 'block';
+        function startTimer() {
+            seconds = 0;
+            document.getElementById('timer').textContent = "00:00";
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer').textContent = `${mins}:${secs}`;
+            }, 1000);
         }
-      } catch (e) {
-        document.getElementById('sent-error-msg').textContent = e.message;
-        document.getElementById('sent-error').style.display = 'block';
-        document.getElementById('sent-loading').style.display = 'none';
-      }
-    });
-  </script>
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timer').textContent = "00:00";
+        }
+
+        // Processing Logic
+        async function processAudio(blobOrFile) {
+            const fd = new FormData();
+            // Add filename if it's a blob from recorder to ensure backend detects format (webm vs wav)
+            if (blobOrFile instanceof Blob && !blobOrFile.name) {
+                const ext = blobOrFile.type.includes('wav') ? 'wav' : 'webm';
+                fd.append('audio', blobOrFile, `recording.${ext}`);
+            } else {
+                fd.append('audio', blobOrFile);
+            }
+
+            document.getElementById('sent-loading').style.display = 'block';
+            document.getElementById('sent-result').style.display = 'none';
+            document.getElementById('sent-error').style.display = 'none';
+            document.getElementById('sent-form').style.opacity = '0.5';
+
+            try {
+                const res = await fetch('/api/sentiment_voice', { method: 'POST', body: fd });
+                const json = await res.json();
+
+                document.getElementById('sent-loading').style.display = 'none';
+                document.getElementById('sent-form').style.opacity = '1';
+
+                if (json.error) {
+                    document.getElementById('sent-error-msg').textContent = json.error;
+                    document.getElementById('sent-error').style.display = 'block';
+                } else {
+                    // Determine colors based on sentiment
+                    let badgeClass = 'bg-secondary';
+                    if (json.sentiment.label === 'POSITIVE') badgeClass = 'bg-success';
+                    else if (json.sentiment.label === 'NEGATIVE') badgeClass = 'bg-danger';
+                    else badgeClass = 'bg-warning text-dark';
+
+                    const html = `
+            <div class="mb-3">
+              <small class="text-secondary text-uppercase fw-bold">Transcript</small>
+              <p class="bg-dark p-3 rounded border border-secondary mt-1" style="--bs-bg-opacity: .3;">"${json.text}"</p>
+            </div>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+               <div>
+                  <small class="text-secondary text-uppercase fw-bold d-block">Sentiment</small>
+                  <span class="badge ${badgeClass} fs-6 mt-1">${json.sentiment.label}</span>
+               </div>
+               <div class="text-end">
+                  <small class="text-secondary text-uppercase fw-bold d-block">Confidence</small>
+                  <span class="fs-5 fw-bold">${(json.sentiment.score * 100).toFixed(1)}%</span>
+               </div>
+            </div>
+          `;
+                    document.getElementById('sent-result-content').innerHTML = html;
+                    document.getElementById('sent-result').style.display = 'block';
+                }
+            } catch (e) {
+                document.getElementById('sent-error-msg').textContent = e.message;
+                document.getElementById('sent-error').style.display = 'block';
+                document.getElementById('sent-loading').style.display = 'none';
+                document.getElementById('sent-form').style.opacity = '1';
+            }
+        }
+
+        // Recording Handler
+        const recordBtn = document.getElementById('record-btn');
+        const recordStatus = document.getElementById('record-status');
+
+        recordBtn.addEventListener('click', async () => {
+            if (!AudioRecorder.getState()) {
+                try {
+                    await AudioRecorder.start();
+                    recordBtn.classList.add('recording');
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordStatus.textContent = "Recording... Click stop to finish.";
+                    startTimer();
+                } catch (err) {
+                    alert("Could not access microphone. Please allow permissions.");
+                }
+            } else {
+                const audioBlob = await AudioRecorder.stop();
+                recordBtn.classList.remove('recording');
+                recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordStatus.textContent = "Recording text analyzed below.";
+                stopTimer();
+
+                if (audioBlob) {
+                    processAudio(audioBlob);
+                }
+            }
+        });
+
+        // File Upload Handler
+        document.getElementById('sent-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const f = document.getElementById('audio-input').files[0];
+            if (f) processAudio(f);
+        });
+    </script>
 </body>
+
 </html>
