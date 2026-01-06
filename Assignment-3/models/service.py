@@ -3,8 +3,12 @@ from pathlib import Path
 import uuid
 import wave
 import struct
+from networkx import clustering
 import numpy as np
 from PIL import Image
+from sklearn.cluster import DBSCAN , KMeans
+from mlxtend.frequent_patterns import apriori, association_rules
+import pandas as pd
 
 # Disable TensorFlow entirely - use PyTorch only
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -281,3 +285,123 @@ def text_to_speech(text: str):
             for _ in range(nframes):
                 wf.writeframes(struct.pack('<h', 0))
         return str(out_path)
+
+# APRIORY Algorithm
+def association_rules_mining(dataSet, min_support=0.5, min_confidence=0.7):
+    """
+    Apply Apriori algorithm to find association rules
+
+    Args:
+        dataSet: List of transactions, each transaction is a list of items
+        min_support: Minimum support threshold (0-1)
+        min_confidence: Minimum confidence threshold (0-1)
+
+    Returns:
+        List of association rules as dictionaries
+    """
+    try:
+        # Create a DataFrame for one-hot encoding
+        items = sorted({item for transaction in dataSet for item in transaction})
+        encoded_data = pd.DataFrame([{item: (item in transaction) for item in items} for transaction in dataSet])
+
+        # Applying Apriori Algorithm
+        frequent_itemsets = apriori(encoded_data, min_support=min_support, use_colnames=True)
+
+        if len(frequent_itemsets) == 0:
+            return []
+
+        # Generating Association Rules
+        rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=min_confidence)
+
+        # Convert to dictionary with readable format
+        result = []
+        for idx, rule in rules.iterrows():
+            result.append({
+                'antecedents': list(rule['antecedents']),
+                'consequents': list(rule['consequents']),
+                'support': float(rule['support']),
+                'confidence': float(rule['confidence']),
+                'lift': float(rule['lift'])
+            })
+
+        return result
+    except Exception as e:
+        print(f"Apriori error: {e}")
+        return []
+
+
+
+
+# DBSCAN Clustering
+def dbscan_clustering(dataSet, epsilon=10, min_samples=5):
+    """
+    Apply DBSCAN clustering algorithm
+
+    Args:
+        dataSet: List of numerical feature vectors
+        epsilon: Maximum distance between points
+        min_samples: Minimum number of samples to form a cluster
+
+    Returns:
+        List of cluster assignments for each data point
+    """
+    try:
+        data = np.array(dataSet)
+
+        # Applying DBSCAN
+        clustering = DBSCAN(eps=epsilon, min_samples=min_samples)
+        clusters = clustering.fit_predict(data)
+
+        return clusters.tolist()
+    except Exception as e:
+        print(f"DBSCAN error: {e}")
+        return []
+
+
+
+# K-Means Clustering
+def kmeans_clustering(dataSet, n_clusters=2, max_iter=300, headers=None):
+    """
+    Apply K-Means clustering algorithm
+
+    Args:
+        dataSet: List of numerical feature vectors or DataFrame
+        n_clusters: Number of clusters to create
+        max_iter: Maximum number of iterations
+        headers: Column names for the data
+
+    Returns:
+        Dictionary with clusters, centers, and inertia
+    """
+    try:
+        # Convert to numpy array if list
+        if isinstance(dataSet, list):
+            data = np.array(dataSet)
+        else:
+            data = dataSet.values if hasattr(dataSet, 'values') else np.array(dataSet)
+
+        # Apply K-Means
+        kmeans = KMeans(n_clusters=n_clusters, max_iter=max_iter, random_state=42)
+        clusters = kmeans.fit_predict(data)
+
+        # Get cluster centers
+        centers = kmeans.cluster_centers_.tolist()
+
+        # Calculate inertia (sum of squared distances)
+        inertia = float(kmeans.inertia_)
+
+        return {
+            'clusters': clusters.tolist(),
+            'cluster_centers': centers,
+            'inertia': inertia,
+            'n_clusters': n_clusters,
+            'dataset_raw': data.tolist()  # Include dataset for frontend plotting
+        }
+    except Exception as e:
+        print(f"K-Means error: {e}")
+        return {
+            'clusters': [],
+            'cluster_centers': [],
+            'inertia': 0,
+            'error': str(e)
+        }

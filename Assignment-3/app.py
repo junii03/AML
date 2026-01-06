@@ -132,6 +132,67 @@ def api_qa_voice():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/apriory')
+def apriory_page():
+    return render_template('apriory.html')
+
+@app.route('/dbscan')
+def dbscan_page():
+    return render_template('dbscan.html')
+
+@app.route('/kmeans')
+def kmeans_page():
+    return render_template('kmeans.html')
+
+@app.route('/api/apriory', methods=['POST'])
+def api_apriory():
+    try:
+        data = request.json or {}
+        dataset = data.get('dataset', [])
+        min_support = data.get('min_support', 0.5)
+        min_confidence = data.get('min_confidence', 0.7)
+
+        if not dataset:
+            return jsonify({'error': 'No dataset provided'}), 400
+
+        result = service.association_rules_mining(dataset, min_support, min_confidence)
+        return jsonify({'rules': result})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/dbscan', methods=['POST'])
+def api_dbscan():
+    try:
+        data = request.json or {}
+        dataset = data.get('dataset', [])
+        epsilon = data.get('epsilon', 10)
+        min_samples = data.get('min_samples', 5)
+
+        if not dataset:
+            return jsonify({'error': 'No dataset provided'}), 400
+
+        result = service.dbscan_clustering(dataset, epsilon, min_samples)
+        return jsonify({'clusters': result})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/kmeans', methods=['POST'])
+def api_kmeans():
+    try:
+        data = request.json or {}
+        dataset = data.get('dataset', [])
+        n_clusters = data.get('n_clusters', 2)
+        max_iter = data.get('max_iter', 300)
+        headers = data.get('headers', [])
+
+        if not dataset:
+            return jsonify({'error': 'No dataset provided'}), 400
+
+        result = service.kmeans_clustering(dataset, n_clusters, max_iter, headers)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.errorhandler(404)
 def not_found(error):

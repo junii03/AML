@@ -17,3 +17,7 @@ numpy==1.26.4
 
 # Tokenization (for translation models)
 sentencepiece==0.2.1
+
+# sklearn for assignement 4
+scikit-learn==1.6.1
+mlxtend==0.23.4

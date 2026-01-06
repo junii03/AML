@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBSCAN - Density-Based Clustering</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-lg">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>ML Services
+            </a>
+            <span class="navbar-text text-white-50 d-none d-md-block">DBSCAN - Density-Based Clustering</span>
+        </div>
+    </nav>
+
+    <main class="container-lg py-5" style="margin-top: 80px;">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="service-card mb-4">
+                    <div class="service-header">
+                        <div class="service-icon"
+                            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-cluster"></i>
+                        </div>
+                        <h1 class="h2 fw-bold">DBSCAN Clustering</h1>
+                        <p class="text-secondary">Density-Based Spatial Clustering of Applications with Noise</p>
+                    </div>
+
+                    <div class="p-4">
+                        <p class="text-secondary mb-4">
+                            DBSCAN is a density-based clustering algorithm that groups together points that are closely
+                            packed.
+                            Upload a CSV file with numerical features (e.g., Height, Weight).
+                        </p>
+
+                        <div class="card bg-dark mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title text-info">📄 CSV Format Example:</h6>
+                                <pre class="mb-0"><code>Height,Weight
+170,65
+175,70
+172,68
+180,75
+165,62</code></pre>
+                            </div>
+                        </div>
+
+                        <form id="dbscanForm" class="mb-4">
+                            <div class="mb-3">
+                                <label for="csvFile" class="form-label">Upload CSV Dataset</label>
+                                <input type="file" class="form-control" id="csvFile" accept=".csv"
+                                    placeholder="Choose CSV file">
+                                <small class="text-secondary">Max file size: 10MB. File should have numerical columns
+                                    only.</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="epsilon" class="form-label">Epsilon (eps)</label>
+                                    <input type="number" class="form-control" id="epsilon" value="10" min="0.1"
+                                        step="0.5">
+                                    <small class="text-secondary">Maximum distance between points</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="minSamples" class="form-label">Minimum Samples</label>
+                                    <input type="number" class="form-control" id="minSamples" value="5" min="2"
+                                        step="1">
+                                    <small class="text-secondary">Min points to form a cluster</small>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-gradient w-100">
+                                <i class="fas fa-play me-2"></i>Cluster Data
+                            </button>
+                        </form>
+
+                        <div id="loading" class="text-center mb-4" style="display: none;">
+                            <div class="spinner-border text-info" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-secondary mt-2">Processing clusters...</p>
+                        </div>
+
+                        <div id="results" style="display: none;">
+                            <h5 class="text-info mb-3">
+                                <i class="fas fa-chart-scatter me-2"></i>Clustering Results
+                            </h5>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-warning">Number of Clusters</h6>
+                                            <h3 id="clusterCount" class="text-info">0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-dark">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-warning">Noise Points</h6>
+                                            <h3 id="noiseCount" class="text-danger">0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card bg-dark mb-4">
+                                <div class="card-body">
+                                    <h6 class="card-title text-info mb-3">Cluster Visualization</h6>
+                                    <div style="position: relative; height: 400px;">
+                                        <canvas id="clusterChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="clusterDetails" class="table-responsive">
+                                <!-- Cluster details will be inserted here -->
+                            </div>
+                        </div>
+
+                        <div id="error" class="alert alert-danger" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <a href="/" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back Home
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('dbscanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showError('Please select a CSV file');
+                return;
+            }
+
+            const text = await file.text();
+            const lines = text.trim().split('\n');
+
+            // Skip header and convert to numerical data
+            const dataset = lines.slice(1).map(line =>
+                line.split(',').map(val => parseFloat(val.trim()))
+            ).filter(row => row.every(val => !isNaN(val)));
+
+            if (dataset.length === 0) {
+                showError('CSV file should contain numerical data');
+                return;
+            }
+
+            const epsilon = parseFloat(document.getElementById('epsilon').value);
+            const minSamples = parseInt(document.getElementById('minSamples').value);
+
+            showLoading(true);
+            clearResults();
+
+            try {
+                const response = await fetch('/api/dbscan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        dataset: dataset,
+                        epsilon: epsilon,
+                        min_samples: minSamples
+                    })
+                });
+
+                const data = await response.json();
+                showLoading(false);
+
+                if (response.ok) {
+                    displayResults(data, dataset);
+                } else {
+                    showError(data.error || 'Error processing dataset');
+                }
+            } catch (err) {
+                showLoading(false);
+                showError(`Error: ${err.message}`);
+            }
+        });
+
+        function displayResults(data, dataset) {
+            const clusters = data.clusters || [];
+
+            // Count noise points (cluster -1)
+            const noiseCount = clusters.filter(c => c === -1).length;
+            const uniqueClusters = new Set(clusters.filter(c => c !== -1));
+
+            document.getElementById('clusterCount').textContent = uniqueClusters.size;
+            document.getElementById('noiseCount').textContent = noiseCount;
+
+            // Create cluster statistics
+            let html = `<table class="table table-dark table-striped">
+                <thead>
+                    <tr class="table-info">
+                        <th>Cluster ID</th>
+                        <th>Points in Cluster</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            // Count points per cluster
+            const clusterCounts = {};
+            clusters.forEach(c => {
+                clusterCounts[c] = (clusterCounts[c] || 0) + 1;
+            });
+
+            // Display cluster info
+            Object.keys(clusterCounts).sort().forEach(clusterId => {
+                const count = clusterCounts[clusterId];
+                const percentage = ((count / clusters.length) * 100).toFixed(2);
+                const label = clusterId === '-1' ? 'Noise' : `Cluster ${clusterId}`;
+                const badge = clusterId === '-1' ? 'danger' : 'success';
+
+                html += `<tr>
+                    <td><span class="badge bg-${badge}">${label}</span></td>
+                    <td>${count}</td>
+                    <td>${percentage}%</td>
+                </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('clusterDetails').innerHTML = html;
+
+            // Plot the clusters
+            plotClusters(dataset, clusters);
+        }
+
+        function plotClusters(dataset, clusters) {
+            const colors = [
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+                '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#A8E6CF'
+            ];
+
+            const clusterMap = {};
+            clusters.forEach((cluster, idx) => {
+                if (!clusterMap[cluster]) {
+                    clusterMap[cluster] = [];
+                }
+                clusterMap[cluster].push(dataset[idx]);
+            });
+
+            const datasets = [];
+            let colorIdx = 0;
+
+            Object.keys(clusterMap).sort().forEach(clusterId => {
+                const points = clusterMap[clusterId];
+                const isNoise = clusterId === '-1';
+                const color = isNoise ? '#FF0000' : colors[colorIdx % colors.length];
+
+                datasets.push({
+                    label: isNoise ? 'Noise' : `Cluster ${clusterId}`,
+                    data: points.map(p => ({ x: p[0], y: p[1] })),
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderWidth: isNoise ? 2 : 1,
+                    pointRadius: isNoise ? 6 : 4,
+                    pointStyle: isNoise ? 'triangle' : 'circle',
+                    showLine: false
+                });
+
+                if (!isNoise) colorIdx++;
+            });
+
+            const ctx = document.getElementById('clusterChart').getContext('2d');
+
+            if (window.dbscanChart) {
+                window.dbscanChart.destroy();
+            }
+
+            window.dbscanChart = new Chart(ctx, {
+                type: 'scatter',
+                data: { datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' },
+                            title: { display: true, text: 'Feature 1', color: '#fff' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' },
+                            title: { display: true, text: 'Feature 2', color: '#fff' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
