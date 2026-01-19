@@ -284,6 +284,125 @@
                         </div>
                     </div>
 
+                    <!-- Apriori API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.6s;">
+                        <h2 class="accordion-header" id="headingApriori">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseApriori" aria-expanded="false" aria-controls="collapseApriori">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-list-check me-2 text-secondary"></i>
+                                    Apriori (Association Rules)
+                                    <span class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/apriori</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseApriori" class="accordion-collapse collapse" aria-labelledby="headingApriori"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/apriori</h6>
+                                <p class="text-secondary small">Runs Apriori on uploaded transactional CSV and returns frequent itemsets and rules.</p>
+
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData / JSON)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">file</code> (file) - CSV of transactions (required)</li>
+                                            <li><code class="text-info">min_support</code> (float) - Minimum support (optional, default 0.5)</li>
+                                            <li><code class="text-info">min_confidence</code> (float) - Minimum confidence (optional, default 0.7)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
+  "frequent_itemsets": [["milk","bread"],["eggs"]],
+  "rules": [{"antecedent":["milk"],"consequent":["bread"],"support":0.6,"confidence":0.8}]
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KMeans API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.7s;">
+                        <h2 class="accordion-header" id="headingKMeans">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseKMeans" aria-expanded="false" aria-controls="collapseKMeans">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-sitemap me-2 text-info"></i>
+                                    KMeans Clustering
+                                    <span class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/kmeans</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseKMeans" class="accordion-collapse collapse" aria-labelledby="headingKMeans"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/kmeans</h6>
+                                <p class="text-secondary small">Performs KMeans clustering on uploaded CSV data and returns cluster labels and centroids.</p>
+
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData / JSON)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">file</code> (file) - CSV of feature vectors (required)</li>
+                                            <li><code class="text-info">n_clusters</code> (int) - Number of clusters (optional, default 3)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
+  "labels": [0,1,0,2],
+  "centroids": [[1.2,3.4],[7.0,8.1],[2.2,0.5]]
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DBSCAN API -->
+                    <div class="accordion-item shadow fade-in" style="animation-delay: 0.8s;">
+                        <h2 class="accordion-header" id="headingDBSCAN">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseDBSCAN" aria-expanded="false" aria-controls="collapseDBSCAN">
+                                <span class="method-badge">POST</span>
+                                <span class="api-section-title">
+                                    <i class="fas fa-network-wired me-2 text-warning"></i>
+                                    DBSCAN
+                                    <span class="ms-3 text-secondary font-monospace opacity-50 small d-none d-sm-inline">/api/dbscan</span>
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="collapseDBSCAN" class="accordion-collapse collapse" aria-labelledby="headingDBSCAN"
+                            data-bs-parent="#apiAccordion">
+                            <div class="accordion-body">
+                                <h6 class="text-accent fs-6 font-monospace mb-3 d-sm-none">/api/dbscan</h6>
+                                <p class="text-secondary small">Runs DBSCAN on uploaded CSV features and returns cluster labels and number of clusters (noise labeled -1).</p>
+
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Parameters (FormData / JSON)</h6>
+                                        <ul class="text-secondary small emoji-list">
+                                            <li><code class="text-info">file</code> (file) - CSV of feature vectors (required)</li>
+                                            <li><code class="text-info">eps</code> (float) - Neighborhood radius (optional, default 0.5)</li>
+                                            <li><code class="text-info">min_samples</code> (int) - Min samples (optional, default 5)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold small mb-2 text-primary">Sample Response</h6>
+                                        <pre class="bg-dark p-3 rounded border border-secondary text-light mb-0"><code>{
+  "labels": [0,0,1,-1],
+  "n_clusters": 2
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
